@@ -18,9 +18,11 @@ type Params = ParsedUrlQuery & {
 export const getStaticProps: GetStaticProps<Props, Params> = async ({params}) => {
   const trips = await api.trips.list(params?.origin!);
 
+  trips.sort((a, b) => a.price - b.price);
+
   return {
     props: {
-      trips,
+      trips: trips.slice(0, 100),
     },
   };
 };
@@ -30,9 +32,27 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const OriginPage: React.FC<Props> = ({trips}) => {
-  console.log(trips);
 
-  return <div>{`<OriginPage />`}</div>;
+  return(
+    <table>
+      <thead>
+        <tr>
+          <td>Destino</td>
+          <td>Días</td>
+          <td>Precio</td>
+        </tr>
+      </thead>
+      <tbody>
+        {trips.map((trip) =>(
+          <tr key={trip.id}>
+            <td>{trip.origin.destination}</td>
+            <td>{trip.days}</td>
+            <td>{trip.price}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 };
 
 export default OriginPage;
