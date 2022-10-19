@@ -4,7 +4,7 @@ import {ParsedUrlQuery} from "querystring";
 
 import {GetStaticPaths, GetStaticProps} from "next";
 import React from "react";
-
+import styles from "../styles/App.module.css";
 import api from "../api";
 
 type Props = {
@@ -32,9 +32,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const OriginPage: React.FC<Props> = ({trips}) => {
-
-  return(
-    <table>
+  return (
+    <table className={styles.table}>
       <thead>
         <tr>
           <td>Destino</td>
@@ -43,7 +42,7 @@ const OriginPage: React.FC<Props> = ({trips}) => {
         </tr>
       </thead>
       <tbody>
-        {trips.map((trip) =>(
+        {trips.map((trip) => (
           <tr key={trip.id}>
             <td>{trip.origin.destination}</td>
             <td>{trip.days}</td>

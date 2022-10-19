@@ -37,7 +37,7 @@ const api = {
               destination,
               origin,
               availability: Math.min(origin.availability, destination.availability),
-              price: origin.price + destination.price,
+              price: Math.ceil(origin.price + destination.price),
             });
           }
         }
