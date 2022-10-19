@@ -1,12 +1,29 @@
-import type {NextPage} from "next";
+import type {GetStaticProps, NextPage} from "next";
 
-import Head from 'next/head'
-import Image from 'next/image'
+import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import styles from '../styles/Home.module.css'
 
-const Home: NextPage = () => {
+import api from "../api";
+import styles from "../styles/Home.module.css";
+import {Flight} from "../types";
+
+type Props = {
+  origins: Flight["origin"][];
+};
+
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const origins = await api.origin.list();
+
+  return {
+    props: {
+      origins,
+    },
+  };
+};
+
+const Home: NextPage<Props> = ({origins}) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -23,11 +40,13 @@ const Home: NextPage = () => {
           </Link>
         </h1>
         <div className={styles.grid}>
-          <Link href={`/cor`}>
-            <a href="https://next.org/" className={styles.card}>
-              <h2>COR &rarr;</h2>
-            </a>
-          </Link>
+          {origins.map((origin) => (
+            <Link key={origin} href={`/${origin}`}>
+              <a className={styles.card} href="https://next.org/">
+                <h2>{origin}&rarr;</h2>
+              </a>
+            </Link>
+          ))}
         </div>
       </main>
 
