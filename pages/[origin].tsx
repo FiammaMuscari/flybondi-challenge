@@ -34,43 +34,49 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 const OriginPage: React.FC<Props> = ({trips}) => {
   const [sort, setSort] = useState<"price" | "days">("price");
+  const [page, setPage] = useState<number>(10);
   const matches = useMemo(() => {
     const draft = [...trips];
 
-    return draft.sort((a, b) => a[sort] - b[sort]);
-  }, [sort, trips]);
+    return draft.sort((a, b) => a[sort] - b[sort]).slice(0, page);
+  }, [sort, trips, page]);
 
   return (
-    <table className={styles.table}>
-      <thead>
-        <tr>
-          <td>Destino</td>
-          <td
-            style={{cursor: "pointer", color: sort === "days" ? "#e1b531" : "inherit"}}
-            onClick={() => setSort("days")}
-          >
-            Días
-          </td>
-          <td
-            style={{cursor: "pointer", color: sort === "price" ? "#e1b531" : "inherit"}}
-            onClick={() => setSort("price")}
-          >
-            Precio
-          </td>
-        </tr>
-      </thead>
-      <tbody>
-        {matches.map((trip) => (
-          <tr key={trip.id}>
-            <td>{trip.origin.destination}</td>
-            <td>{trip.days}</td>
-            <td>
-              {Number(trip.price).toLocaleString("es-AR", {style: "currency", currency: "ARS"})}
+    <>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <td>Destino</td>
+            <td
+              style={{cursor: "pointer", color: sort === "days" ? "#e1b531" : "inherit"}}
+              onClick={() => setSort("days")}
+            >
+              Días
+            </td>
+            <td
+              style={{cursor: "pointer", color: sort === "price" ? "#e1b531" : "inherit"}}
+              onClick={() => setSort("price")}
+            >
+              Precio
             </td>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {matches.map((trip) => (
+            <tr key={trip.id}>
+              <td>{trip.origin.destination}</td>
+              <td>{trip.days}</td>
+              <td>
+                {Number(trip.price).toLocaleString("es-AR", {style: "currency", currency: "ARS"})}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {trips.length > page && (
+        <button onClick={() => setPage((page) => page + 10)}>Cargar más</button>
+      )}
+    </>
   );
 };
 
